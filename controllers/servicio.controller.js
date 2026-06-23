@@ -1,9 +1,15 @@
 const Servicio = require('../models/servicio.model');
 
+exports.formularioSer = async (req,res)=>{
+  res.render('pages/registrarservicio', {mensaje:""});
+}
+
 exports.consultar = async (req,res)=>{
   try {
     const servicios = await Servicio.find();
-    res.json(servicios);
+    // res.json(servicios);
+    res.render('pages/index4',{servicios:servicios})
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,9 +37,12 @@ exports.registrar = async(req,res)=>{
 
     const servicios = await Servicio.insertOne(nuevoServicio);
     console.log(servicios);
-    res.json(servicios);
+    res.render('pages/registrarservicio', {mensaje:"registro exitoso"});
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // res.status(500).json({ error: error.message });
+    res.render('pages/registrarservicio', {mensaje:"Error en el registro"});
+
   }
 }
 

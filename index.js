@@ -9,8 +9,10 @@ const servicioController = require('./controllers/servicio.controller');
 
 
 const app = express();
-app.set('view engine', 'ejs');
+const enrutamiento = require('./router/enrutamiento.router')
 
+app.set('view engine', 'ejs');
+app.use('/api/v1', enrutamiento);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
@@ -22,13 +24,9 @@ function conectarDB(){
 conectarDB();
 
 app.get('/', clienteController.home);
-app.get('/formulario', clienteController.formulario);
 
-app.get('/clientes', clienteController.consultar);
-app.get('/clientes/:id',clienteController.consultarId);
 app.post('/clientes', clienteController.registrar);
-app.put('/clientes/:id',clienteController.actualizar);
-app.delete('/clientes/:id',clienteController.eliminar);
+
 
 app.get('/listarClientes', function(req,res){
    fetch('https://apibasica344-oljs.onrender.com/clientes')
@@ -46,11 +44,17 @@ app.post('/Producto', productoController.registrar);
 app.put('/Producto/:id',productoController.actualizar);
 app.delete('/Producto/:id',productoController.eliminar);
 
+app.get('/formularioPro', productoController.formularioPro);
+
+
 app.get('/servicios', servicioController.consultar);
 app.get('/servicios/:id',servicioController.consultarId);
 app.post('/servicios', servicioController.registrar);
 app.put('/servicios/:id',servicioController.actualizar);
 app.delete('/servicios/:id',servicioController.eliminar);
+
+app.get('/formularioSer', servicioController.formularioSer);
+
 
 
 app.listen(8000)

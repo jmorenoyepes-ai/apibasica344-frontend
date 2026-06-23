@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body class="container">
+
+
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+
+
+    <main>
+        <div class="jumbotron">
+            <div class="container mt-3">
+                <h2>Registrar Servicio</h2>
+                <form action="/servicios" method="post">
+                    <div class="mb-3 mt-3">
+                        <label for=""><%=mensaje%></label><br>
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Ingresa el nombre del servicio" name="nombre">
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="descripcion">Descripcion:</label>
+                        <input type="text" class="form-control" id="descripcion" placeholder="Descripcion del servicio" name="descripcion">
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="duracionMinutos">Duración minutos:</label>
+                        <input type="number" class="form-control" id="duracionMinutos" placeholder="Ingresa la duración minutos" name="duracionMinutos">
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="precio">Precio:</label>
+                        <input type="number" class="form-control" id="precio" placeholder="Ingresa el precio del servicio" name="precio">
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="categoria">Categoria:</label>
+                        <input type="text" class="form-control" id="categoria" placeholder="Ingresa la categoria" name="categoria">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+</body>
+
+</html>

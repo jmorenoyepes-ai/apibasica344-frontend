@@ -11,20 +11,24 @@
 
     <main>
        <div class="jumbotron">
-           <h1>Clientes</h1>
+           <h1>Servicios</h1>
            <table id="tablita" class="table table-striped">
                <thead>
                    <th>Nombre</th>
-                   <th>Email</th>
-                   <th>Telefono</th>
+                   <th>Descripción</th>
+                   <th>Duración minutos</th>
+                   <th>Precio</th>
+                   <th>Categoria</th>
                    <th>Acciones</th>
                </thead>
                <tbody >
-                   <% clientes.forEach(function(cliente) { %>
+                   <% servicios.forEach(function(servicio) { %>
                    <tr>
-                       <td><%=cliente.nombre%></td>
-                       <td><%=cliente.email%></td>
-                       <td><%=cliente.telefono%></td>
+                       <td><%=servicio.nombre%></td>
+                       <td><%=servicio.descripcion%></td>
+                       <td><%=servicio.duracionMinutos%></td>
+                       <td><%=servicio.precio%></td>
+                       <td><%=servicio.categoria%></td>
                        <td>
                             <a class="btn btn-outline-info" href="">Ver detalles</a>
                             <a class="btn btn-outline-warning" href="">Editar</a>

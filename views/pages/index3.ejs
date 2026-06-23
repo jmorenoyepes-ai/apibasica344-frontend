@@ -11,20 +11,20 @@
 
     <main>
        <div class="jumbotron">
-           <h1>Clientes</h1>
+           <h1>Productos</h1>
            <table id="tablita" class="table table-striped">
                <thead>
                    <th>Nombre</th>
-                   <th>Email</th>
-                   <th>Telefono</th>
+                   <th>Precio</th>
+                   <th>Stock</th>
                    <th>Acciones</th>
                </thead>
                <tbody >
-                   <% clientes.forEach(function(cliente) { %>
+                   <% productos.forEach(function(producto) { %>
                    <tr>
-                       <td><%=cliente.nombre%></td>
-                       <td><%=cliente.email%></td>
-                       <td><%=cliente.telefono%></td>
+                       <td><%=producto.nombre%></td>
+                       <td><%=producto.precio%></td>
+                       <td><%=producto.stock%></td>
                        <td>
                             <a class="btn btn-outline-info" href="">Ver detalles</a>
                             <a class="btn btn-outline-warning" href="">Editar</a>

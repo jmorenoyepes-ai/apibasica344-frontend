@@ -1,9 +1,15 @@
 const Producto = require('../models/producto.model');
 
+exports.formularioPro = async (req,res)=>{
+  res.render('pages/registrarproducto', {mensaje:""});
+}
+
 exports.consultar = async (req,res)=>{
   try {
     const productos = await Producto.find();
-    res.json(productos);
+    // res.json(productos);
+    res.render('pages/index3',{productos:productos})
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -29,9 +35,12 @@ exports.registrar = async(req,res)=>{
 
     const productos = await Producto.insertOne(nuevoProducto);
     console.log(productos);
-    res.json(productos);
+    res.render('pages/registrarproducto', {mensaje:"registro exitoso"});
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // res.status(500).json({ error: error.message });
+    res.render('pages/registrarproducto', {mensaje:"Error en el registro"});
+
   }
 }
 
