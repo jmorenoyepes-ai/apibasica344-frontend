@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+
+    <main>
+       <div class="jumbotron">
+           <h1>Clientes</h1>
+           <table id="tablita" class="table table-striped">
+               <thead>
+                   <th>Nombre</th>
+                   <th>Email</th>
+                   <th>Telefono</th>
+                   <th>Acciones</th>
+               </thead>
+               <tbody >
+                   <% clientes.forEach(function(cliente) { %>
+                   <tr>
+                       <td><%=cliente.nombre%></td>
+                       <td><%=cliente.email%></td>
+                       <td><%=cliente.telefono%></td>
+                       <td>
+                            <a class="btn btn-outline-warning" href="">Editar</a>
+                            <a class="btn btn-outline-danger" href="">Eliminar</a>
+                       </td>
+                   </tr>
+               <% }); %>
+               </tbody>
+
+           </table>
+
+       </div>
+   </main>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+
+    
+</body>
+</html>
