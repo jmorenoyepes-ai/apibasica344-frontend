@@ -1,6 +1,7 @@
 require("node:dns").setServers(["1.1.1.1", "8.8.8.8"]);
 const express = require('express');
 require('dotenv').config();
+const methodOverride = require("method-override");
 
 const conect = require('mongoose');
 const clienteController = require('./controllers/cliente.controller');
@@ -11,10 +12,11 @@ const servicioController = require('./controllers/servicio.controller');
 const app = express();
 const enrutamiento = require('./router/enrutamiento.router')
 
-app.set('view engine', 'ejs');
-app.use('/api/v1', enrutamiento);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(methodOverride("_method"));
+app.set('view engine', 'ejs');
+app.use('/api/v1', enrutamiento);
 
 function conectarDB(){
     const URI = (process.env.MONGOURI)
