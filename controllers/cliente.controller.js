@@ -50,22 +50,22 @@ exports.registrar = async(req,res)=>{
 
 exports.actualizar = async(req,res)=>{
     try {
-        let = clienteActualizado= req.body
-        
-        
+        let clienteActualizado = req.body
+
         const clientes = await Cliente.updateOne(
                 {"email": req.params.id},{$set: clienteActualizado}
             );
 
             if (clientes.matchedCount === 0) {
-                return res.status(404).json({mensaje: 'Cliente no encontrado'});
+                const listaClientes = await Cliente.find();
+                return res.render('pages/index2', {clientes: listaClientes, mensaje: "Cliente no encontrado"});
             }
 
-            res.json({mensaje: 'Cliente actualizado correctamente'});
-        console.log(clientes);
-        res.json(clientes);
+        const listaClientes = await Cliente.find();
+        res.render('pages/index2', {clientes: listaClientes, mensaje: "Cliente actualizado correctamente"});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const listaClientes = await Cliente.find();
+    res.render('pages/index2', {clientes: listaClientes, mensaje: "Error al actualizar el cliente"});
   }
 }
 
@@ -75,15 +75,16 @@ exports.eliminar = async(req,res)=>{
                 {"email": req.params.id}
             );
 
-            if (clientes.matchedCount === 0) {
-                return res.status(404).json({mensaje: 'Cliente no encontrado'});
+            if (clientes.deletedCount === 0) {
+                const listaClientes = await Cliente.find();
+                return res.render('pages/index2', {clientes: listaClientes, mensaje: "Cliente no encontrado"});
             }
 
-            res.json({mensaje: 'Cliente eliminado correctamente'});
-        console.log(clientes);
-        res.json(clientes);
+        const listaClientes = await Cliente.find();
+        res.render('pages/index2', {clientes: listaClientes, mensaje: "Cliente eliminado correctamente"});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const listaClientes = await Cliente.find();
+    res.render('pages/index2', {clientes: listaClientes, mensaje: "Error al eliminar el cliente"});
   }
 }
 /**

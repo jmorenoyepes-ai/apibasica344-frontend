@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 
 const conect = require('mongoose');
 const clienteController = require('./controllers/cliente.controller');
+const authController = require('./controllers/auth.controller');
 const productoController = require('./controllers/producto.controller');
 const servicioController = require('./controllers/servicio.controller');
 
@@ -25,7 +26,9 @@ function conectarDB(){
 }
 conectarDB();
 
-app.get('/', clienteController.home);
+app.get('/', authController.landing);
+app.post('/login', authController.login);
+app.get('/inicio', clienteController.home);
 
 app.post('/clientes', clienteController.registrar);
 
@@ -35,7 +38,7 @@ app.get('/listarClientes', function(req,res){
    .then(response => response.json())
    .then(data => {
        res.render('pages/index2',
-           {clientes:data}
+           {clientes:data, mensaje: ""}
        )
    });
 });
