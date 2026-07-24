@@ -1,5 +1,14 @@
 const Producto = require('../models/producto.model');
 
+exports.catalogo = async (req,res)=>{
+  try {
+    const productos = await Producto.find();
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 exports.formularioPro = async (req,res)=>{
   res.render('pages/registrarproducto', {mensaje:""});
 }
@@ -8,7 +17,7 @@ exports.consultar = async (req,res)=>{
   try {
     const productos = await Producto.find();
     // res.json(productos);
-    res.render('pages/index3',{productos:productos})
+    res.render('pages/index3',{productos:productos, mensaje: ""})
 
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,22 +55,22 @@ exports.registrar = async(req,res)=>{
 
 exports.actualizar = async(req,res)=>{
     try {
-        let = productoActualizado= req.body
-        
-        
+        let productoActualizado = req.body
+
         const productos = await Producto.updateOne(
                 {"nombre": req.params.id},{$set: productoActualizado}
             );
 
             if (productos.matchedCount === 0) {
-                return res.status(404).json({mensaje: 'Producto no encontrado'});
+                const listaProductos = await Producto.find();
+                return res.render('pages/index3', {productos: listaProductos, mensaje: "Producto no encontrado"});
             }
 
-            res.json({mensaje: 'Producto actualizado correctamente'});
-        console.log(productos);
-        res.json(productos);
+        const listaProductos = await Producto.find();
+        res.render('pages/index3', {productos: listaProductos, mensaje: "Producto actualizado correctamente"});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const listaProductos = await Producto.find();
+    res.render('pages/index3', {productos: listaProductos, mensaje: "Error al actualizar el producto"});
   }
 }
 
@@ -72,14 +81,14 @@ exports.eliminar = async(req,res)=>{
             );
 
             if (productos.deletedCount === 0) {
-                return res.status(404).json({mensaje: 'Producto no encontrado'});
+                const listaProductos = await Producto.find();
+                return res.render('pages/index3', {productos: listaProductos, mensaje: "Producto no encontrado"});
             }
 
-            return res.json({mensaje: 'Producto eliminado correctamente'});
-            
-        console.log(productos);
-
+        const listaProductos = await Producto.find();
+        res.render('pages/index3', {productos: listaProductos, mensaje: "Producto eliminado correctamente"});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const listaProductos = await Producto.find();
+    res.render('pages/index3', {productos: listaProductos, mensaje: "Error al eliminar el producto"});
   }
 }

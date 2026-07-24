@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <%- include('../partials/head'); %>
 </head>
+
 <body class="container">
 
     <header>
@@ -10,35 +12,134 @@
     </header>
 
     <main>
-       <div class="jumbotron">
-           <h1>Productos</h1>
-           <table id="tablita" class="table table-striped">
-               <thead>
-                   <th>Nombre</th>
-                   <th>Precio</th>
-                   <th>Stock</th>
-                   <th>Acciones</th>
-               </thead>
-               <tbody >
-                   <% productos.forEach(function(producto) { %>
-                   <tr>
-                       <td><%=producto.nombre%></td>
-                       <td><%=producto.precio%></td>
-                       <td><%=producto.stock%></td>
-                       <td>
-                            <a class="btn btn-outline-info" href="">Ver detalles</a>
-                            <a class="btn btn-outline-warning" href="">Editar</a>
-                            <a class="btn btn-outline-danger" href="">Eliminar</a>
-                       </td>
-                   </tr>
-               <% }); %>
-               </tbody>
+        <div class="jumbotron">
+            <h1>Productos</h1>
 
-           </table>
+            <% if (typeof mensaje !== "undefined" && mensaje !== "") { %>
+                <div class="alert alert-info" role="alert"><%=mensaje%></div>
+            <% } %>
 
-       </div>
-   </main>
-            </ul>
+            <table id="tablita" class="table table-striped">
+                <thead>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
+                </thead>
+                <tbody>
+                    <% productos.forEach(function(producto) { %>
+                        <tr>
+                            <td>
+                                <%=producto.nombre%>
+                            </td>
+                            <td>
+                                <%=producto.precio%>
+                            </td>
+                            <td>
+                                <%=producto.stock%>
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-info"
+                                    onclick="modalVer('<%=producto.nombre%>', '<%=producto.precio%>', '<%=producto.stock%>')"
+                                    data-bs-toggle="modal" data-bs-target="#ModalProductoVer">Ver detalles</button>
+                                <button class="btn btn-outline-warning"
+                                    onclick="modalEditar('<%=producto.nombre%>', '<%=producto.precio%>', '<%=producto.stock%>')"
+                                    data-bs-toggle="modal" data-bs-target="#ModalProductoEditar">Editar</button>
+                                <button class="btn btn-outline-danger"
+                                    onclick="modalEliminar('<%=producto.nombre%>')"
+                                    data-bs-toggle="modal" data-bs-target="#ModalProductoEliminar">Eliminar</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+
+            </table>
+
+            <!-- ventana modal reutilizable para ver -->
+
+            <div class="modal fade" id="ModalProductoVer" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Información de producto</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Nombre:</strong> <span id="nombreProducto"></span></p>
+
+                            <p><strong>Precio:</strong> <span id="precioProducto"></span></p>
+
+                            <p><strong>Stock:</strong> <span id="stockProducto"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ventana modal reutilizable para editar -->
+
+            <div class="modal fade" id="ModalProductoEditar" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar producto</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="formEditarProducto" method="POST">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nombreProducto" class="form-label"><strong>Nombre</strong></label>
+                                    <input type="text" name="nombre" class="form-control" id="nombreProductoEditar">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="precioProducto" class="form-label"><strong>Precio</strong></label>
+                                    <input type="number" name="precio" class="form-control" id="precioProductoEditar">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="stockProducto" class="form-label"><strong>Stock</strong></label>
+                                    <input type="text" name="stock" class="form-control" id="stockProductoEditar">
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ventana modal reutilizable para eliminar -->
+
+            <div class="modal fade" id="ModalProductoEliminar" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar eliminación</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="formEliminarProducto" method="POST">
+                            <div class="modal-body">
+                                <p>Está completamente seguro de que quiere eliminar a : </p>
+                                <p><strong><span id="nombreProductoEliminar"></span></strong> </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -46,6 +147,29 @@
         <%- include('../partials/footer'); %>
     </footer>
 
-    
 </body>
+<script>
+
+    function modalVer(nombre, precio, stock) {
+        document.getElementById("nombreProducto").textContent = nombre;
+        document.getElementById("precioProducto").textContent = precio;
+        document.getElementById("stockProducto").textContent = stock;
+    }
+
+    function modalEditar(nombre, precio, stock) {
+        document.getElementById("nombreProductoEditar").value = nombre;
+        document.getElementById("precioProductoEditar").value = precio;
+        document.getElementById("stockProductoEditar").value = stock;
+
+        document.getElementById("formEditarProducto").action =
+            "/Producto/" + nombre + "?_method=PUT";
+    }
+
+    function modalEliminar(nombre) {
+        document.getElementById("nombreProductoEliminar").textContent = nombre;
+        document.getElementById("formEliminarProducto").action =
+            "/Producto/" + nombre + "?_method=DELETE";
+    }
+</script>
+
 </html>

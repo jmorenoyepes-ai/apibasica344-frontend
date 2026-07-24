@@ -29,6 +29,7 @@ conectarDB();
 app.get('/', authController.landing);
 app.post('/login', authController.login);
 app.get('/inicio', clienteController.home);
+app.get('/catalogo', productoController.catalogo);
 
 app.post('/clientes', clienteController.registrar);
 

@@ -2,25 +2,96 @@
 <html lang="en">
 <head>
    <%- include('../partials/head'); %>
+   <style>
+      .hero-tienda {
+         background: linear-gradient(135deg, #2c3e50, #34495e);
+         color: #fff;
+         border-radius: 10px;
+         padding: 60px 30px;
+      }
+      .card-catalogo {
+         height: 100%;
+      }
+   </style>
 </head>
 <body class="container">
 
-   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+   <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded">
       <div class="container-fluid">
          <a class="navbar-brand" href="/">Tienda</a>
-         <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalLogin">
-            Iniciar sesión
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLanding">
+            <span class="navbar-toggler-icon"></span>
          </button>
+         <div class="collapse navbar-collapse" id="navbarLanding">
+            <ul class="navbar-nav me-auto">
+               <li class="nav-item">
+                  <a class="nav-link" href="#catalogo">Catálogo</a>
+               </li>
+            </ul>
+            <ul class="navbar-nav align-items-sm-center">
+               <li class="nav-item">
+                  <button class="btn btn-outline-light position-relative me-sm-2" type="button"
+                     data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" id="btnVerCarrito"
+                     onclick="verCarrito()">
+                     <i class="bi bi-cart-fill"></i> Carrito
+                  </button>
+               </li>
+               <li class="nav-item mt-2 mt-sm-0">
+                  <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalLogin">
+                     Iniciar sesión
+                  </button>
+               </li>
+            </ul>
+         </div>
       </div>
    </nav>
 
    <main>
-      <div class="jumbotron mt-5 text-center">
+      <div class="hero-tienda mt-4 text-center">
          <h1>Bienvenido a la Tienda</h1>
          <p class="lead">Encuentra nuestros productos y servicios en un solo lugar.</p>
-         <p>Inicia sesión para administrar clientes, productos y servicios.</p>
+         <a href="#catalogo" class="btn btn-light me-2">Ver catálogo</a>
+         <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalLogin">Iniciar sesión</button>
+      </div>
+
+      <div class="row text-center mt-5">
+         <div class="col-md-4 mb-4">
+            <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
+            <h5 class="mt-2">Productos de calidad</h5>
+            <p class="text-muted">Seleccionamos lo mejor para nuestros clientes.</p>
+         </div>
+         <div class="col-md-4 mb-4">
+            <i class="bi bi-truck" style="font-size: 2rem;"></i>
+            <h5 class="mt-2">Entrega rápida</h5>
+            <p class="text-muted">Recibe tus productos sin contratiempos.</p>
+         </div>
+         <div class="col-md-4 mb-4">
+            <i class="bi bi-shield-check" style="font-size: 2rem;"></i>
+            <h5 class="mt-2">Compra segura</h5>
+            <p class="text-muted">Tu información siempre está protegida.</p>
+         </div>
+      </div>
+
+      <div id="catalogo" class="mt-4">
+         <h2 class="text-center mb-4">Nuestro catálogo</h2>
+         <div id="contenedorProductos" class="row"></div>
       </div>
    </main>
+
+   <!-- offcanvas del carrito de compras -->
+
+   <div class="offcanvas offcanvas-end" id="offcanvasCarrito" aria-labelledby="offcanvasCarritoLabel">
+      <div class="offcanvas-header">
+         <h5 class="offcanvas-title" id="offcanvasCarritoLabel">Carrito de compras</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+         <div id="contenedorCarrito"></div>
+         <button type="button" class="btn btn-primary w-100 mt-3" onclick="finalizarCompra()">Finalizar compra</button>
+      </div>
+   </div>
+
+   <!-- ventana modal para iniciar sesión -->
 
    <div class="modal fade" id="ModalLogin" tabindex="-1" aria-labelledby="ModalLoginLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -65,4 +136,204 @@
    });
 </script>
 <% } %>
+<script>
+
+   const contenedorProductos = document.getElementById('contenedorProductos');
+   const contenedorCarrito = document.getElementById('contenedorCarrito');
+
+   let carrito = [];
+
+   function cargarCarrito() {
+      carrito = localStorage.getItem('carrito');
+      if (carrito == "null" || carrito == null) {
+         carrito = [];
+         return carrito;
+      } else {
+         carrito = JSON.parse(carrito);
+         return carrito;
+      }
+   }
+
+   function agregarProducto(producto) {
+      let cart = cargarCarrito();
+
+      let productoEncontrado = cart.find(p => p.nombre === producto.nombre);
+
+      if (productoEncontrado) {
+         productoEncontrado.unidades += 1;
+      } else {
+         producto.unidades = 1;
+         cart.push(producto);
+      }
+
+      localStorage.setItem('carrito', JSON.stringify(cart));
+      verCarrito();
+   }
+
+   function quitarProducto(producto) {
+      let cart = cargarCarrito();
+
+      let productoEncontrado = cart.find(p => p.nombre === producto.nombre);
+
+      if (productoEncontrado) {
+         productoEncontrado.unidades -= 1;
+
+         if (productoEncontrado.unidades <= 0) {
+            let index = cart.findIndex(p => p.nombre === producto.nombre);
+            cart.splice(index, 1);
+         }
+      }
+
+      localStorage.setItem('carrito', JSON.stringify(cart));
+      verCarrito();
+   }
+
+   function cargarProductos() {
+      fetch('/catalogo')
+         .then(res => res.json())
+         .then(productos => {
+
+            productos.forEach(producto => {
+
+               const columna = document.createElement('div');
+               columna.className = "col-md-4 mb-4";
+
+               const tarjeta = document.createElement('div');
+               tarjeta.className = "card card-catalogo shadow-sm";
+
+               const body = document.createElement('div');
+               body.className = "card-body text-center";
+
+               const nombre = document.createElement('h5');
+               nombre.innerText = producto.nombre;
+               nombre.className = "card-title mt-2";
+
+               const precio = document.createElement('p');
+               precio.innerText = "Precio: $" + producto.precio;
+               precio.className = "card-text";
+
+               const stock = document.createElement('p');
+               stock.innerText = "Stock disponible: " + producto.stock;
+               stock.className = "card-text text-muted";
+
+               const btnAgregar = document.createElement('button');
+               btnAgregar.innerText = "Agregar al carrito";
+               btnAgregar.className = "btn btn-primary";
+
+               if (producto.stock <= 0) {
+                  btnAgregar.disabled = true;
+                  btnAgregar.innerText = "Sin stock";
+               }
+
+               btnAgregar.addEventListener('click', () => {
+                  agregarProducto(producto);
+                  alert("Producto agregado al carrito: " + producto.nombre);
+               });
+
+               body.appendChild(nombre);
+               body.appendChild(precio);
+               body.appendChild(stock);
+               body.appendChild(btnAgregar);
+               tarjeta.appendChild(body);
+               columna.appendChild(tarjeta);
+
+               contenedorProductos.appendChild(columna);
+            });
+         });
+   }
+
+   function verCarrito() {
+      contenedorCarrito.innerHTML = "";
+
+      let lista = cargarCarrito();
+      let subtotal = 0;
+
+      if (lista.length === 0) {
+         contenedorCarrito.innerHTML = "<p class='text-muted'>Tu carrito está vacío.</p>";
+      }
+
+      lista.forEach(producto => {
+
+         subtotal += producto.precio * producto.unidades;
+
+         const tarjeta = document.createElement('div');
+         tarjeta.className = "card mb-3";
+
+         const body = document.createElement('div');
+         body.className = "card-body";
+
+         const titulo = document.createElement('h6');
+         titulo.innerText = producto.nombre;
+
+         const fila = document.createElement('div');
+         fila.className = "d-flex justify-content-between align-items-center";
+
+         const btnQuitar = document.createElement('button');
+         btnQuitar.className = "btn btn-sm btn-outline-danger";
+         btnQuitar.innerHTML = "<i class='bi bi-dash'></i>";
+         btnQuitar.addEventListener('click', () => quitarProducto(producto));
+
+         const cantidad = document.createElement('span');
+         cantidad.innerText = producto.unidades;
+
+         const btnAgregar = document.createElement('button');
+         btnAgregar.className = "btn btn-sm btn-outline-success";
+         btnAgregar.innerHTML = "<i class='bi bi-plus'></i>";
+         btnAgregar.addEventListener('click', () => agregarProducto(producto));
+
+         const precio = document.createElement('p');
+         precio.className = "mb-0 mt-2 fw-bold";
+         precio.innerText = "$" + (producto.precio * producto.unidades).toFixed(2);
+
+         fila.appendChild(btnQuitar);
+         fila.appendChild(cantidad);
+         fila.appendChild(btnAgregar);
+
+         body.appendChild(titulo);
+         body.appendChild(fila);
+         body.appendChild(precio);
+         tarjeta.appendChild(body);
+
+         contenedorCarrito.appendChild(tarjeta);
+      });
+
+      const divSubtotal = document.createElement('div');
+      divSubtotal.className = "text-center p-3 mt-3 rounded";
+      divSubtotal.style.backgroundColor = "#2c3e50";
+      divSubtotal.style.color = "white";
+
+      const tituloSubtotal = document.createElement('h6');
+      tituloSubtotal.innerText = "Subtotal del carrito";
+
+      const totalSubtotal = document.createElement('p');
+      totalSubtotal.className = "mb-0";
+      totalSubtotal.innerText = "$" + subtotal.toFixed(2);
+
+      divSubtotal.appendChild(tituloSubtotal);
+      divSubtotal.appendChild(totalSubtotal);
+      contenedorCarrito.appendChild(divSubtotal);
+   }
+
+   function finalizarCompra() {
+      let cart = cargarCarrito();
+
+      if (cart.length === 0) {
+         alert("Tu carrito está vacío.");
+         return;
+      }
+
+      const offcanvasCarrito = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCarrito'));
+      if (offcanvasCarrito) {
+         offcanvasCarrito.hide();
+      }
+
+      var modalLogin = new bootstrap.Modal(document.getElementById('ModalLogin'));
+      modalLogin.show();
+   }
+
+   window.addEventListener('DOMContentLoaded', function () {
+      cargarProductos();
+      verCarrito();
+   });
+</script>
 </html>
